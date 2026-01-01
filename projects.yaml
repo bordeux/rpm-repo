@@ -1,0 +1,22 @@
+# RPM Repository Generator - Project Configuration
+#
+# Define GitHub repositories that release .rpm packages.
+# The generator will fetch releases and build an RPM repository.
+
+# Repository settings
+settings:
+  # Repository name (used in .repo file)
+  name: bordeux
+  # Repository base URL (will be set automatically for GitHub Pages)
+  baseurl: https://bordeux.github.io/rpm-repo
+  # Architectures to support
+  architectures:
+    - x86_64
+    - aarch64
+  # Repository description
+  description: "Bordeux Packages"
+
+# Projects to include in the repository
+projects:
+  - repo: bordeux/tmpltool
+    keep_versions: 1
