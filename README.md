@@ -22,6 +22,7 @@ settings:
   architectures:
     - x86_64
     - aarch64
+  sign_packages: true       # Sign RPM packages with GPG
 
 projects:
   - repo: bordeux/tmpltool
@@ -88,6 +89,7 @@ settings:
     - x86_64
     - aarch64
   description: "Bordeux Packages"         # Repository description
+  sign_packages: true                     # Sign RPM packages (default: true)
 
 projects:
   - repo: bordeux/tmpltool                # GitHub repository (required)
@@ -117,10 +119,13 @@ python scripts/generate_repo.py --dry-run
 # List configured projects
 python scripts/generate_repo.py --list
 
-# With GPG signing
+# With GPG signing (signs repo metadata + packages if sign_packages=true in config)
 python scripts/generate_repo.py --gpg-key YOUR_KEY_ID
 
-# Skip signing
+# Force sign packages even if sign_packages=false in config
+python scripts/generate_repo.py --gpg-key YOUR_KEY_ID --sign-packages
+
+# Skip all signing
 python scripts/generate_repo.py --no-sign
 ```
 

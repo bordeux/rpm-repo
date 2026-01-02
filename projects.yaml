@@ -15,6 +15,8 @@ settings:
     - aarch64
   # Repository description
   description: "Bordeux Packages"
+  # Sign individual RPM packages (requires GPG key)
+  sign_packages: true
 
 # Projects to include in the repository
 projects:

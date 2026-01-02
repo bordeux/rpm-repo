@@ -88,6 +88,7 @@ class RepoSettings:
     baseurl: str = ""
     architectures: list[str] = field(default_factory=lambda: ["x86_64", "aarch64"])
     description: str = "GitHub Packages"
+    sign_packages: bool = True
 
 
 class GitHubAPI:
@@ -499,6 +500,7 @@ def load_config(config_path: Path) -> tuple[RepoSettings, list[Project]]:
         baseurl=settings_data.get("baseurl", ""),
         architectures=settings_data.get("architectures", ["x86_64", "aarch64"]),
         description=settings_data.get("description", "GitHub Packages"),
+        sign_packages=settings_data.get("sign_packages", True),
     )
 
     projects = []
@@ -662,8 +664,9 @@ def main():
                     else:
                         print(f"      Already exists, skipping download")
 
-                    # Sign RPM package if requested
-                    if args.sign_packages and args.gpg_key and needs_signing:
+                    # Sign RPM package if enabled (via config or CLI flag)
+                    should_sign = settings.sign_packages or args.sign_packages
+                    if should_sign and args.gpg_key and needs_signing:
                         print(f"      Signing...")
                         if sign_rpm_package(rpm_path, args.gpg_key):
                             print(f"      Signed successfully")
@@ -727,11 +730,12 @@ def main():
 
     # Generate .repo file
     repo_file_path = output_dir / f"{settings.name}.repo"
+    should_sign = settings.sign_packages or args.sign_packages
     generate_repo_file(
         repo_file_path,
         settings,
         gpg_key=args.gpg_key if not args.no_sign else None,
-        sign_packages=args.sign_packages,
+        sign_packages=should_sign,
     )
     print(f"  Created {settings.name}.repo")
 
