@@ -1,6 +1,6 @@
 [bordeux]
 name=Bordeux Packages
-baseurl=https://bordeux.github.io/rpm-repo
+baseurl=https://bordeux.github.io/rpm-repo/packages
 enabled=1
 gpgcheck=1
 gpgkey=https://bordeux.github.io/rpm-repo/RPM-GPG-KEY-bordeux
