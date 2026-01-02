@@ -414,18 +414,23 @@ def export_public_key(output_path: Path, gpg_key: Optional[str] = None) -> bool:
 
 def generate_repo_file(output_path: Path, settings: RepoSettings, gpg_key: Optional[str] = None) -> None:
     """Generate .repo file for easy installation."""
-    gpgcheck = "1" if gpg_key else "0"
-    gpgkey_line = f"gpgkey={settings.baseurl}/RPM-GPG-KEY-{settings.name}" if gpg_key else ""
-
     # baseurl must point to packages/ where repodata/ lives
     packages_url = f"{settings.baseurl.rstrip('/')}/packages"
+
+    # gpgcheck=0: individual RPM packages are not signed
+    # repo_gpgcheck=1: repository metadata (repomd.xml) is signed
+    if gpg_key:
+        gpg_lines = f"""gpgcheck=0
+repo_gpgcheck=1
+gpgkey={settings.baseurl}/RPM-GPG-KEY-{settings.name}"""
+    else:
+        gpg_lines = "gpgcheck=0"
 
     content = f"""[{settings.name}]
 name={settings.description}
 baseurl={packages_url}
 enabled=1
-gpgcheck={gpgcheck}
-{gpgkey_line}
+{gpg_lines}
 """
     output_path.write_text(content.strip() + "\n")
 
