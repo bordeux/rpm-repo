@@ -1,5 +1,7 @@
 # RPM Repository Generator
 
+[![Update RPM Repository](https://github.com/bordeux/rpm-repo/actions/workflows/update-repo.yml/badge.svg)](https://github.com/bordeux/rpm-repo/actions/workflows/update-repo.yml)
+
 Generate an RPM repository from GitHub releases containing `.rpm` packages. Host your own Fedora/RHEL/CentOS package repository on GitHub Pages.
 
 ## How It Works
