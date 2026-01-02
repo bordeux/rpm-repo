@@ -417,9 +417,12 @@ def generate_repo_file(output_path: Path, settings: RepoSettings, gpg_key: Optio
     gpgcheck = "1" if gpg_key else "0"
     gpgkey_line = f"gpgkey={settings.baseurl}/RPM-GPG-KEY-{settings.name}" if gpg_key else ""
 
+    # baseurl must point to packages/ where repodata/ lives
+    packages_url = f"{settings.baseurl.rstrip('/')}/packages"
+
     content = f"""[{settings.name}]
 name={settings.description}
-baseurl={settings.baseurl}
+baseurl={packages_url}
 enabled=1
 gpgcheck={gpgcheck}
 {gpgkey_line}
