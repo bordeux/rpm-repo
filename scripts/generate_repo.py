@@ -396,6 +396,49 @@ def sign_repository(repodata_dir: Path, gpg_key: Optional[str] = None) -> bool:
         return False
 
 
+def sign_rpm_package(rpm_path: Path, gpg_key: Optional[str] = None) -> bool:
+    """Sign an RPM package with GPG using rpm --addsign."""
+    try:
+        # Create a temporary rpmmacros file for non-interactive signing
+        rpmmacros = Path.home() / ".rpmmacros"
+        macros_content = "%_gpg_name {}\n%__gpg_sign_cmd %{{__gpg}} gpg --batch --no-armor --no-secmem-warning -u \"%{{_gpg_name}}\" -sbo %{{__signature_filename}} %{{__plaintext_filename}}\n".format(
+            gpg_key or ""
+        )
+
+        # Backup existing .rpmmacros if it exists
+        backup_path = None
+        if rpmmacros.exists():
+            backup_path = rpmmacros.with_suffix(".rpmmacros.bak")
+            shutil.copy2(rpmmacros, backup_path)
+
+        try:
+            rpmmacros.write_text(macros_content)
+
+            # Sign the RPM package
+            result = subprocess.run(
+                ["rpm", "--addsign", str(rpm_path)],
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+
+            if result.returncode == 0:
+                return True
+            else:
+                print(f"      Warning: Failed to sign {rpm_path.name}: {result.stderr}")
+                return False
+        finally:
+            # Restore original .rpmmacros
+            if backup_path and backup_path.exists():
+                shutil.move(backup_path, rpmmacros)
+            elif rpmmacros.exists():
+                rpmmacros.unlink()
+
+    except (subprocess.SubprocessError, FileNotFoundError) as e:
+        print(f"      Warning: RPM signing failed: {e}")
+        return False
+
+
 def export_public_key(output_path: Path, gpg_key: Optional[str] = None) -> bool:
     """Export GPG public key for repository users."""
     try:
@@ -412,15 +455,25 @@ def export_public_key(output_path: Path, gpg_key: Optional[str] = None) -> bool:
     return False
 
 
-def generate_repo_file(output_path: Path, settings: RepoSettings, gpg_key: Optional[str] = None) -> None:
+def generate_repo_file(
+    output_path: Path,
+    settings: RepoSettings,
+    gpg_key: Optional[str] = None,
+    sign_packages: bool = False,
+) -> None:
     """Generate .repo file for easy installation."""
     # baseurl must point to packages/ where repodata/ lives
     packages_url = f"{settings.baseurl.rstrip('/')}/packages"
 
-    # gpgcheck=0: individual RPM packages are not signed
-    # repo_gpgcheck=1: repository metadata (repomd.xml) is signed
     if gpg_key:
-        gpg_lines = f"""gpgcheck=0
+        if sign_packages:
+            # Both individual packages and repo metadata are signed
+            gpg_lines = f"""gpgcheck=1
+repo_gpgcheck=1
+gpgkey={settings.baseurl}/RPM-GPG-KEY-{settings.name}"""
+        else:
+            # Only repo metadata is signed, not individual packages
+            gpg_lines = f"""gpgcheck=0
 repo_gpgcheck=1
 gpgkey={settings.baseurl}/RPM-GPG-KEY-{settings.name}"""
     else:
@@ -519,6 +572,11 @@ def main():
         action="store_true",
         help="Skip GPG signing",
     )
+    parser.add_argument(
+        "--sign-packages",
+        action="store_true",
+        help="Sign individual RPM packages (requires rpm --addsign)",
+    )
 
     args = parser.parse_args()
 
@@ -596,11 +654,19 @@ def main():
 
                     # Download .rpm file
                     rpm_path = packages_dir / pkg.filename
+                    needs_signing = False
                     if not rpm_path.exists():
                         print(f"      Downloading...")
                         download_file(pkg.url, rpm_path, github.token)
+                        needs_signing = True
                     else:
                         print(f"      Already exists, skipping download")
+
+                    # Sign RPM package if requested
+                    if args.sign_packages and args.gpg_key and needs_signing:
+                        print(f"      Signing...")
+                        if sign_rpm_package(rpm_path, args.gpg_key):
+                            print(f"      Signed successfully")
 
                     # Compute hash
                     pkg.sha256 = compute_sha256(rpm_path)
@@ -661,7 +727,12 @@ def main():
 
     # Generate .repo file
     repo_file_path = output_dir / f"{settings.name}.repo"
-    generate_repo_file(repo_file_path, settings, args.gpg_key if not args.no_sign else None)
+    generate_repo_file(
+        repo_file_path,
+        settings,
+        gpg_key=args.gpg_key if not args.no_sign else None,
+        sign_packages=args.sign_packages,
+    )
     print(f"  Created {settings.name}.repo")
 
     print(f"\nRepository generated in: {output_dir}")

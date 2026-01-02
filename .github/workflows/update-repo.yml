@@ -83,7 +83,7 @@ jobs:
           fi
 
           if [ -n "${{ vars.GPG_KEY_ID }}" ]; then
-            ARGS="$ARGS --gpg-key '${{ vars.GPG_KEY_ID }}'"
+            ARGS="$ARGS --gpg-key '${{ vars.GPG_KEY_ID }}' --sign-packages"
           else
             ARGS="$ARGS --no-sign"
           fi
