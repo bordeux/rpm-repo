@@ -22,11 +22,11 @@ settings:
   architectures:
     - x86_64
     - aarch64
-  sign_packages: true       # Sign RPM packages with GPG
 
 projects:
   - repo: bordeux/tmpltool
     keep_versions: 1        # Keep 1 previous version
+    sign_packages: true     # Sign RPM packages with GPG (default: false)
 ```
 
 ### 2. Enable GitHub Pages
@@ -89,7 +89,6 @@ settings:
     - x86_64
     - aarch64
   description: "Bordeux Packages"         # Repository description
-  sign_packages: true                     # Sign RPM packages (default: true)
 
 projects:
   - repo: bordeux/tmpltool                # GitHub repository (required)
@@ -97,6 +96,7 @@ projects:
     description: "Description"            # Description override
     keep_versions: 1                      # Past versions to keep
     asset_pattern: ".*x86_64.*"           # Regex to filter .rpm assets
+    sign_packages: true                   # Sign packages with GPG (default: false)
 ```
 
 ### Command Line

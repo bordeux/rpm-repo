@@ -75,6 +75,7 @@ class Project:
     description: str = ""
     keep_versions: int = 0
     asset_pattern: str = ""
+    sign_packages: bool = False
 
     def __post_init__(self):
         if not self.name:
@@ -88,7 +89,6 @@ class RepoSettings:
     baseurl: str = ""
     architectures: list[str] = field(default_factory=lambda: ["x86_64", "aarch64"])
     description: str = "GitHub Packages"
-    sign_packages: bool = True
 
 
 class GitHubAPI:
@@ -500,7 +500,6 @@ def load_config(config_path: Path) -> tuple[RepoSettings, list[Project]]:
         baseurl=settings_data.get("baseurl", ""),
         architectures=settings_data.get("architectures", ["x86_64", "aarch64"]),
         description=settings_data.get("description", "GitHub Packages"),
-        sign_packages=settings_data.get("sign_packages", True),
     )
 
     projects = []
@@ -511,6 +510,7 @@ def load_config(config_path: Path) -> tuple[RepoSettings, list[Project]]:
             description=proj_data.get("description", ""),
             keep_versions=proj_data.get("keep_versions", 0),
             asset_pattern=proj_data.get("asset_pattern", ""),
+            sign_packages=proj_data.get("sign_packages", False),
         ))
 
     return settings, projects
@@ -659,8 +659,8 @@ def main():
                     else:
                         print(f"      Already exists, skipping download")
 
-                    # Sign RPM package if enabled in config
-                    if settings.sign_packages and args.gpg_key and needs_signing:
+                    # Sign RPM package if enabled for this project
+                    if project.sign_packages and args.gpg_key and needs_signing:
                         print(f"      Signing...")
                         if sign_rpm_package(rpm_path, args.gpg_key):
                             print(f"      Signed successfully")
@@ -723,12 +723,14 @@ def main():
             print(f"  Skipped signing (GPG not available or no key)")
 
     # Generate .repo file
+    # Enable gpgcheck if any project has sign_packages=true
+    any_signed = any(p.sign_packages for p in all_projects)
     repo_file_path = output_dir / f"{settings.name}.repo"
     generate_repo_file(
         repo_file_path,
         settings,
         gpg_key=args.gpg_key if not args.no_sign else None,
-        sign_packages=settings.sign_packages,
+        sign_packages=any_signed,
     )
     print(f"  Created {settings.name}.repo")
 
