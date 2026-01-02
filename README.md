@@ -119,11 +119,8 @@ python scripts/generate_repo.py --dry-run
 # List configured projects
 python scripts/generate_repo.py --list
 
-# With GPG signing (signs repo metadata + packages if sign_packages=true in config)
+# With GPG signing (uses sign_packages setting from projects.yaml)
 python scripts/generate_repo.py --gpg-key YOUR_KEY_ID
-
-# Force sign packages even if sign_packages=false in config
-python scripts/generate_repo.py --gpg-key YOUR_KEY_ID --sign-packages
 
 # Skip all signing
 python scripts/generate_repo.py --no-sign

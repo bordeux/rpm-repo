@@ -22,3 +22,4 @@ settings:
 projects:
   - repo: bordeux/tmpltool
     keep_versions: 1
+    sign_packages: true

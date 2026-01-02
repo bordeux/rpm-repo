@@ -574,11 +574,6 @@ def main():
         action="store_true",
         help="Skip GPG signing",
     )
-    parser.add_argument(
-        "--sign-packages",
-        action="store_true",
-        help="Sign individual RPM packages (requires rpm --addsign)",
-    )
 
     args = parser.parse_args()
 
@@ -664,9 +659,8 @@ def main():
                     else:
                         print(f"      Already exists, skipping download")
 
-                    # Sign RPM package if enabled (via config or CLI flag)
-                    should_sign = settings.sign_packages or args.sign_packages
-                    if should_sign and args.gpg_key and needs_signing:
+                    # Sign RPM package if enabled in config
+                    if settings.sign_packages and args.gpg_key and needs_signing:
                         print(f"      Signing...")
                         if sign_rpm_package(rpm_path, args.gpg_key):
                             print(f"      Signed successfully")
@@ -730,12 +724,11 @@ def main():
 
     # Generate .repo file
     repo_file_path = output_dir / f"{settings.name}.repo"
-    should_sign = settings.sign_packages or args.sign_packages
     generate_repo_file(
         repo_file_path,
         settings,
         gpg_key=args.gpg_key if not args.no_sign else None,
-        sign_packages=should_sign,
+        sign_packages=settings.sign_packages,
     )
     print(f"  Created {settings.name}.repo")
 
