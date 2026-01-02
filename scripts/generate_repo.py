@@ -574,6 +574,11 @@ def main():
         action="store_true",
         help="Skip GPG signing",
     )
+    parser.add_argument(
+        "--rebuild",
+        action="store_true",
+        help="Force rebuild packages (all if no project specified, otherwise only that project)",
+    )
 
     args = parser.parse_args()
 
@@ -624,6 +629,42 @@ def main():
     print(f"Processing {len(projects_to_process)} project(s)...")
     if preserved_packages:
         print(f"Preserving {len(preserved_packages)} package(s) from other projects")
+
+    # If rebuild mode, clear existing packages for projects being updated
+    if args.rebuild and not args.dry_run:
+        # Build set of filenames to remove (only for projects being updated)
+        files_to_remove = {
+            pkg.filename for pkg in existing_packages
+            if pkg.project_repo in projects_to_update
+        }
+
+        if args.project:
+            print(f"\n[Rebuild mode: clearing packages for {args.project}]")
+        else:
+            print("\n[Rebuild mode: clearing all packages]")
+
+        if packages_dir.exists():
+            for rpm_file in packages_dir.glob("*.rpm"):
+                # Only remove if it belongs to projects being updated
+                if rpm_file.name in files_to_remove or not args.project:
+                    rpm_file.unlink()
+                    print(f"  Removed {rpm_file}")
+
+            # Remove repodata (will be regenerated)
+            repodata_dir = packages_dir / "repodata"
+            if repodata_dir.exists():
+                shutil.rmtree(repodata_dir)
+                print(f"  Removed repodata/")
+
+        # Update preserved packages (keep packages from other projects)
+        if args.project:
+            # Keep packages from projects NOT being rebuilt
+            preserved_packages = [
+                pkg for pkg in existing_packages
+                if pkg.project_repo not in projects_to_update
+            ]
+        else:
+            preserved_packages = []
 
     # Collect new packages
     new_packages: list[RpmPackage] = []
