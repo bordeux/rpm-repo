@@ -2,30 +2,30 @@
   "packages": [
     {
       "name": "Name        : tmpltool",
-      "version": "1.4.2",
+      "version": "1.4.3",
       "architecture": "aarch64",
-      "url": "https://github.com/bordeux/tmpltool/releases/download/v1.4.2/tmpltool-1.4.2-1.aarch64.rpm",
-      "filename": "tmpltool-1.4.2-1.aarch64.rpm",
+      "url": "https://github.com/bordeux/tmpltool/releases/download/v1.4.3/tmpltool-1.4.3-1.aarch64.rpm",
+      "filename": "tmpltool-1.4.3-1.aarch64.rpm",
       "project_repo": "bordeux/tmpltool",
-      "size": 2259997,
-      "sha256": "e8da9080d37b76809362e7a0381622f4f442325dd5e04df72de28b75cd410123",
+      "size": 1755246,
+      "sha256": "4debee3ebbc5cb432a2e43886ec78460c162534e9aa88244747a35bca861f662",
       "summary": "Release     : 1",
-      "description": "Size        : 10216755\nLicense     : MIT\nSignature   : RSA/SHA512, Sun Jan  4 17:52:31 2026, Key ID a1efc29bef042c65\nSource RPM  : (none)\nBuild Date  : Sun Jan  4 17:51:41 2026\nBuild Host  : (none)\nURL         : https://github.com/bordeux/tmpltool\nSummary     : A fast and simple command-line template rendering tool using MiniJinja templates with environment variables\nDescription :\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables\ntmpltool\n1.4.2\n1\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables\nMIT\n(none)\nhttps://github.com/bordeux/tmpltool\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables",
+      "description": "Size        : 6847993\nLicense     : MIT\nSignature   : RSA/SHA512, Thu Jan  8 23:14:04 2026, Key ID a1efc29bef042c65\nSource RPM  : (none)\nBuild Date  : Thu Jan  8 23:13:12 2026\nBuild Host  : (none)\nURL         : https://github.com/bordeux/tmpltool\nSummary     : A fast and simple command-line template rendering tool using MiniJinja templates with environment variables\nDescription :\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables\ntmpltool\n1.4.3\n1\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables\nMIT\n(none)\nhttps://github.com/bordeux/tmpltool\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables",
       "license": "Architecture: aarch64",
       "vendor": "Install Date: (not installed)",
       "homepage": "Group       : Unspecified"
     },
     {
       "name": "Name        : tmpltool",
-      "version": "1.4.2",
+      "version": "1.4.3",
       "architecture": "x86_64",
-      "url": "https://github.com/bordeux/tmpltool/releases/download/v1.4.2/tmpltool-1.4.2-1.x86_64.rpm",
-      "filename": "tmpltool-1.4.2-1.x86_64.rpm",
+      "url": "https://github.com/bordeux/tmpltool/releases/download/v1.4.3/tmpltool-1.4.3-1.x86_64.rpm",
+      "filename": "tmpltool-1.4.3-1.x86_64.rpm",
       "project_repo": "bordeux/tmpltool",
-      "size": 2336299,
-      "sha256": "022d665499e50c17bade479567cdb4bd637eadef52406b5d6edb52eca1beb048",
+      "size": 1885105,
+      "sha256": "3e3d0033bcef409562269c292a3247a81763c9fbf5a89b9a176b40e58742c131",
       "summary": "Release     : 1",
-      "description": "Size        : 10600379\nLicense     : MIT\nSignature   : RSA/SHA512, Sun Jan  4 17:52:31 2026, Key ID a1efc29bef042c65\nSource RPM  : (none)\nBuild Date  : Sun Jan  4 17:50:20 2026\nBuild Host  : (none)\nURL         : https://github.com/bordeux/tmpltool\nSummary     : A fast and simple command-line template rendering tool using MiniJinja templates with environment variables\nDescription :\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables\ntmpltool\n1.4.2\n1\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables\nMIT\n(none)\nhttps://github.com/bordeux/tmpltool\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables",
+      "description": "Size        : 7510049\nLicense     : MIT\nSignature   : RSA/SHA512, Thu Jan  8 23:14:05 2026, Key ID a1efc29bef042c65\nSource RPM  : (none)\nBuild Date  : Thu Jan  8 23:12:31 2026\nBuild Host  : (none)\nURL         : https://github.com/bordeux/tmpltool\nSummary     : A fast and simple command-line template rendering tool using MiniJinja templates with environment variables\nDescription :\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables\ntmpltool\n1.4.3\n1\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables\nMIT\n(none)\nhttps://github.com/bordeux/tmpltool\nA fast and simple command-line template rendering tool using MiniJinja templates with environment variables",
       "license": "Architecture: x86_64",
       "vendor": "Install Date: (not installed)",
       "homepage": "Group       : Unspecified"
@@ -61,5 +61,5 @@
       "homepage": "Group       : Unspecified"
     }
   ],
-  "updated": "2026-01-04T17:52:31.674987+00:00"
+  "updated": "2026-01-08T23:14:05.199629+00:00"
 }
